@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>인스타그램 태그 추천 프로젝트</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.8.0.js" integrity="sha256-00Fh8tkPAe+EmVaHFpD+HovxWk7b97qwqVi7nLvjdgs="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      content = "show_content"
+      if (content == "{{display}}_content") {
+        $('#hide_tag').css('display', 'block');
+        $("#load").css('display', 'none');
+        $('#rotation').css('display', 'none');
+        $('#rotation2').css('display', 'none');
+        $('#rotation3').css('display', 'block');
+      } else {
+        $('#hide_tag').css('display', 'none');
+        $("#load").css('display', 'none');
+        $('#rotation').css('display', 'block');
+        $('#rotation2').css('display', 'block');
+        $('#rotation3').css('display', 'none');
+        $("#btnAll").click(function () {
+          $("#load").css('display', 'block');
+        })
+
+      }
+    })
+
+
+  </script>
+
+  <!-- Favicons -->
+  <link href="/static/img/favicon.png" rel="icon">
+  <link href="/static/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/icofont/icofont.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/boxicons/css/boxicons.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/remixicon/remixicon.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/line-awesome/css/line-awesome.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/owl.carousel/assets/owl.carousel.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'vendor/venobox/venobox.css')}}">
+
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'css/btn.css')}}">
+
+  <!-- 파일업로드 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'css/fileupload/fileinput.css')}}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'css/fileupload/theme.css')}}">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/fileupload/piexif.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/fileupload/sortable.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/fileupload/fileinput.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/fileupload/theme.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/fileupload/theme2.js') }}"></script>
+
+  <!-- Word2Vec 차트 -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <link rel="stylesheet" href="{{url_for('static', filename = 'css/bubble.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename = 'css/table.css')}}">
+  <script type="text/javascript" src="{{ url_for('static', filename = 'js/bubble.js') }}"></script>
+  <!-- bubble chart -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+  <!-- LDA 차트 -->
+  <!-- Resources -->
+  <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+  <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://cdn.amcharts.com/lib/4/plugins/forceDirected.js"></script>
+  <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+
+  <!-- =======================================================
+  * Template Name: Valera - v2.2.1
+  * Template URL: https://bootstrapmade.com/valera-free-bootstrap-theme/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <style>
+    /* .parent {
+      height: 100vh;
+    } */
+
+    .parent>.row {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    .col img {
+      height: 100px;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 1s;
+      object-fit: cover;
+    }
+
+    .col label {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .imgbgchk:checked+label>.tick_container {
+      opacity: 1;
+    }
+
+    /*         aNIMATION */
+    .imgbgchk:checked+label>img {
+      transform: scale(1.25);
+      opacity: 0.3;
+    }
+
+    .tick_container {
+      transition: .5s ease;
+      opacity: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .tick {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      padding: 6px 12px;
+      height: 40px;
+      width: 40px;
+      border-radius: 100%;
+    }
+
+    #load {
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      position: fixed;
+      display: block;
+      opacity: 0.8;
+      background: white;
+      z-index: 99;
+      text-align: center;
+    }
+
+    #load>img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 100;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="load" style="display: block; width:100%; height:100%;">
+    <img src="static/img/loading.gif" alt="loading" style="width:28%; left:36%; top:36%">
+  </div>
+  <!-- ======= Hero Section ======= -->
+  <section id="hero">
+    <div class="hero-container">
+      <h1>
+        인스타그램 태그 추천 프로젝트
+        <a href="#myModal" data-toggle="modal">
+          <img src="static/img/help.png" style="width:7%;">
+        </a>
+      </h1>
+      <div id="rotation">
+        <h2>이미지 선택시 자동으로 해당 이미지의 태그를 추천해드립니다.<br><span style="color:red;">이미지를 선택후 "선택 완료" 버튼을 클릭</span>해주세요.<br><span
+            style="color:red;">약 30초 정도
+            소요</span>됩니다.</h2><br>
+      </div>
+      <div id="rotation3">
+        <h2>아래로 스크롤을 내려주세요.</h2>
+      </div>
+      <!--모달-->
+      <!-- Modal HTML -->
+      <div id="myModal" class="modal fade">
+        <div class="modal-dialog" style="max-width:900px !important;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">인스타 태그 추천</h5>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe id="cartoonVideo" class="embed-responsive-item" src="static/img/final_manual.mp4"
+                  allowfullscreen></iframe>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="container my-4" id="rotation2">
+        <form enctype="multipart/form-data" method="POST" action="upload" id="img_target">
+          <div class="filebox bs3-primary preview-image">
+            <div class="container parent">
+              <div class="row">
+                <div class='col text-center'>
+                  <input type="radio" name="file" id="img1" class="d-none imgbgchk" value="balloon.jpg">
+                  <label for="img1">
+                    <img src="static/uploads/balloon.jpg" alt="Image 1" style="height:20%;">
+                    <div class="tick_container">
+                      <div class="tick"><i class="fa fa-check"></i></div>
+                    </div>
+                  </label>
+                </div>
+                <div class='col text-center'>
+                  <input type="radio" name="file" id="img2" class="d-none imgbgchk" value="party.jpg">
+                  <label for="img2">
+                    <img src="static/uploads/party.jpg" alt="Image 2" style="height:20%;">
+                    <div class="tick_container">
+                      <div class="tick"><i class="fa fa-check"></i></div>
+                    </div>
+                  </label>
+                </div>
+                <div class='col text-center'>
+                  <input type="radio" name="file" id="img3" class="d-none imgbgchk" value="cake.jpg">
+                  <label for="img3">
+                    <img src="static/uploads/cake.jpg" alt="Image 3" style="height:20%;">
+                    <div class="tick_container">
+                      <div class="tick"><i class="fa fa-check"></i></div>
+                    </div>
+                  </label>
+                </div>
+                <div class='col text-center'>
+                  <input type="radio" name="file" id="img4" class="d-none imgbgchk" value="car.jpg">
+                  <label for="img4">
+                    <img src="static/uploads/car.jpg" alt="Image 4" style="height:20%;">
+                    <div class="tick_container">
+                      <div class="tick"><i class="fa fa-check"></i></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div><br>
+            <div class="row">
+              <div style="margin:0 auto !important;">
+                <label for="btnAll" id="upload_btn"
+                  style="padding:.5em .8em !important; font-weight:600; font-size:18px; ">선택 완료</label>
+                <input type="submit" value="Submit" id="btnAll" />
+              </div>
+            </div>
+          </div>
+        </form>
+
+
+        <!-- <form enctype="multipart/form-data" method="POST" action="upload" id="img_target">
+          <div class="filebox bs3-primary preview-image">
+            <input class="upload-name" value="파일명" disabled="disabled" style="width: 200px;">
+            <label for="image">파일 선택</label>
+            <input type="file" id="image" class="upload-hidden" name="file">
+
+            <label for="btnAll" id="upload_btn">업로드</label>
+            <input type="submit" value="Submit" id="btnAll" />
+          </div>
+        </form> -->
+
+
+
+        <!-- <div style="width:30%; height:auto; z-index:999;">
+         <img alt="" src="../media/{{image_name}}" style="width:100%; height:100%;">
+      </div> -->
+      </div>
+
+      <script>
+        $(document).ready(function () {
+          var fileTarget = $('.filebox .upload-hidden');
+
+          fileTarget.on('change', function () {
+            if (window.FileReader) {
+              // 파일명 추출
+              var filename = $(this)[0].files[0].name;
+            }
+
+            else {
+              // Old IE 파일명 추출
+              var filename = $(this).val().split('/').pop().split('\\').pop();
+            };
+
+            $(this).siblings('.upload-name').val(filename);
+          });
+
+          //preview image 
+          var imgTarget = $('.preview-image .upload-hidden');
+
+          imgTarget.on('change', function () {
+            var parent = $(this).parent();
+            parent.children('.upload-display').remove();
+
+            if (window.FileReader) {
+              //image 파일만
+              if (!$(this)[0].files[0].type.match(/image\//)) return;
+
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                var src = e.target.result;
+                parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img src="' + src + '" class="upload-thumb"></div></div>');
+              }
+              reader.readAsDataURL($(this)[0].files[0]);
+            }
+
+            else {
+              $(this)[0].select();
+              $(this)[0].blur();
+              var imgSrc = document.selection.createRange().text;
+              parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img class="upload-thumb"></div></div>');
+
+              var img = $(this).siblings('.upload-display').find('img');
+              img[0].style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enable='true',sizingMethod='scale',src=\"" + imgSrc + "\")";
+            }
+          });
+        });
+
+      </script>
+    </div>
+  </section><!-- End Hero -->
+  <div id="showData"></div>
+  <div id="hide_tag">
+    <!-- ======= Header ======= -->
+    <header id="header">
+      <div class="container-fluid d-flex align-items-center justify-content-between">
+        <nav class="nav-menu d-none d-lg-block">
+          <ul>
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">Image Object Detection</a></li>
+            <li><a href="#services">Word2Vec</a></li>
+            <li><a href="#portfolio">LDA</a></li>
+            <li><a href="#team">Yolo</a></li>
+            <li><a href="#contact">메인으로 돌아가기</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+
+      <!-- ======= About Section ======= -->
+      <section id="about" class="about"
+        style="bottom-padding:0px; background:url(./static/img/) top center; background-size:cover;">
+        <div class="container">
+
+          <div class="section-title">
+            <h2>Image Object Detection {{display}}</h2>
+            <p>
+              이미지가 들어오면 한 부분에 물체가 있다는걸 인식 (Object Recognition)하고,
+              그 물체가 무엇인지(Object Classification)판단 하고 정확한 위치를 찍어 줍니다(Object Localization).
+              OC와 OL이 합쳐지면 Object Detection, OD 가 됩니다
+            </p>
+          </div>
+          <div class="row content">
+            <div class="col-lg-12"
+              style="display:inlin-block; position:relative; width:100%; padding-left:14%; padding-right:14%;">
+              <div style="display:inline-block; float:left;">
+                <img alt="" src="static/img/iphone.png">
+              </div>
+              <div style="width:22.5%; height:47%; position:absolute; top:22.5%; left:15.4%; z-index:999; float:left;">
+                <img alt="" src="static/uploads/{{before_image}}" style="width:100%; height:100%;" id="img1">
+              </div>
+              <div style="display:inline-block; float:right;">
+                <img alt="" src="static/img/iphone.png">
+              </div>
+              <div
+                style="width:22.5%; height:47%; position:absolute; top:22.5%; right:15.4%; z-index:999; background-color:red; float:right;">
+                <img alt="" src="static/yolo_img/{{before_image}}" style="width:100%; height:100%;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- ======= Word2Vec Section ======= -->
+      <section id="services" class="services section-bg">
+        <div class="container">
+
+          <div class="section-title">
+            <h2>Word2Vec</h2>
+            <p>해당 이미지를 분석했을 때 해당되는 사물에 연관된 태그의 빈도수를 분석한 결과입니다.</p>
+            <p><span style="color:red; font-weight: 600;">좌측 이미지를 클릭해보세요.</span> 더 자세한 내용을 확인 가능합니다</p>
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-7 d-flex align-items-stretch">
+                <a href="chart_word">
+                  <img src="static/word2vecimg/{{keyword}}2.png" alt="w2v_img" height="640" width="640">
+                </a>
+                <!-- 640 x 640 -->
+              </div>
+              <div class="col-md-5 d-flex align-items-stretch mt-4 mt-md-0">
+                <img src="static/word2vecimg/{{keyword}}1.png" height="640">
+                <!-- 440 x 800 -->
+              </div>
+            </div>
+
+
+          </div>
+          <div class="row portfolio-container">
+            <!-- 버블형 시각화 -->
+
+
+            <!-- 랭킹형 시각화 -->
+
+
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ======= LDA Section ======= -->
+      <section id="portfolio" class="portfolio">
+        <div class="container">
+
+          <div class="section-title">
+            <h2>LDA</h2>
+            <p>각 단어나 문서의 숨겨진 주제를 찾아내어 문서와 키워드별로 주제끼리 묶어주는 비지도 학습 알고리즘</p>
+          </div>
+          <style>
+            #chartdiv {
+              width: 100%;
+              height: 1000px;
+              max-width: 100%;
+            }
+          </style>
+          <div class="row">
+            <div id="chartdiv" style="height:600px; width: 100%"></div>
+          </div>
+
+        </div>
+      </section><!-- End Portfolio Section -->
+
+
+      <!-- ======= Cta Section ======= -->
+      <!--  <section id="cta" class="cta">
+      <div class="container">
+
+        <div class="text-center">
+          <h3>Call To Action</h3>
+          <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <a class="cta-btn" href="#">Call To Action</a>
+        </div>
+
+      </div>
+    </section> -->
+
+      <!-- ======= Yolo Section ======= -->
+      <section id="team" class="portfolio">
+        <div class="container">
+
+          <div class="section-title">
+            <h2>Yolo</h2>
+            <p>Yolo 분석 그래프</p>
+          </div>
+
+          <ul class="portfolio-flters d-flex justify-content-center">
+            <li data-filter="*" class="filter-active">Yolo</li>
+            <li data-filter=".filter-app"></li>
+
+          </ul>
+
+          <div class="row portfolio-container">
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="../static/img/confusion_matrix.png" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>Confusion Matrix</h4>
+                <p>데이터셋에 대한 분류 모델의 성능을 설명해줍니다.</p>
+                <a href="/static/img/confusion_matrix.png" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="App 1"><i class="bx bx-plus"></i></a>
+                <a href="/static/img/confusion_matrix.png" class="details-link" title="More Details"><i
+                    class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="static/img/F1_curve.png" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>F1_curve</h4>
+                <p>F1-Score와 confidence를 가지고 나타낸 그래프입니다.</p>
+                <a href="static/img/F1_curve.png" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="Web 3"><i class="bx bx-plus"></i></a>
+                <a href="static/img/F1_curve.png" class="details-link" title="More Details"><i
+                    class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="static/img/P_curve.png" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>P_curve</h4>
+                <p>Precision(정밀도)와 Confidence(신뢰구간)을 이용한 그래프입니다.</p>
+                <a href="static/img/P_curve.png" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="App 2"><i class="bx bx-plus"></i></a>
+                <a href="static/img/P_curve.png" class="details-link" title="More Details"><i
+                    class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="static/img/PR_curve.png" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>PR_curve</h4>
+                <p>물체를 검출하는 알고리즘의 성능을 평가하는 방법 중 하나 </p>
+                <p>ex)분석을 통해 사물이나 물체가 얼마나 잘 인식 되었는지. </p>
+                <a href="static/img/PR_curve.png" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="Card 2"><i class="bx bx-plus"></i></a>
+                <a href="static/img/PR_curve.png" class="details-link" title="More Details"><i
+                    class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="static/img/R_curve.png" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>R_curve</h4>
+                <p>Recall(검출율)과 Confidence(신뢰구간)을 가지고 나타낸 그래프</p>
+                <a href="static/img/R_curve.png" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="Web 2"><i class="bx bx-plus"></i></a>
+                <a href="static/img/R_curve.png" class="details-link" title="More Details"><i
+                    class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="static/img/results.png" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>results</h4>
+                <p>Box, val Box : 물체를 인식하기위해 라벨링된 박스</p>
+                <p>Objectness, Val Objectness : 기준 신뢰도</p>
+                <p>Classification, Val Classification : 분류</p>
+                <p>Precision : 옳게 검출한 비율</p>
+                <p>Recall : 실제 옳게 검출된 결과물 중에서 옳다고 예측한 것의 비율</p>
+                <p>mAP@0.5:0.95 : 평균정밀도의 값이 0.5~0.95사이의 값들</p>
+                <p>mAP@0.5 : 평균정밀도의 값이 0.5이상인 값들</p>
+                <a href="static/img/results.png" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="App 3"><i class="bx bx-plus"></i></a>
+                <a href="static/img/results.png" class="details-link" title="More Details"><i
+                    class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-img"><img src="static/img/labels.jpg" class="img-fluid" alt=""></div>
+              <div class="portfolio-info">
+                <h4>labels</h4>
+                <p>왼쪽상단 그래프 : 매겨진 라벨값의 갯수 막대차트</p>
+                <p>왼쪽하단 그래프 : 라벨의 위치좌표의 분포</p>
+                <p>오른쪽하단 그래프 : 라벨의 가로, 세로의 크기의 분포</p>
+                <a href="static/img/labels.jpg" data-gall="portfolioGallery" class="venobox preview-link"
+                  title="Card 1"><i class="bx bx-plus"></i></a>
+                <a href="static/img/labels.jpg" class="details-link" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section><!-- End Portfolio Section -->
+
+
+      <!-- ======= ppt Section ======= -->
+      <section id="contact" class="contact"
+        style="background: url(static/img/footer-bg.jpg) no-repeat 50% 10%; background-size:cover; ">
+        <div class="container" id="footer">
+
+          <div class="footer-top">
+
+            <div class="container">
+
+              <!--<div class="row  justify-content-center">
+                <div class="col-lg-6">
+                  <h3>Valera</h3>
+                  <p>Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni eligendi fuga maxime saepe commodi
+                    placeat.</p>
+                </div>
+              </div>-->
+              <style>
+                .btn-buy {
+                  background: #ff7f5d;
+                  display: inline-block;
+                  padding: 8px 35px 9px 35px;
+                  border-radius: 4px;
+                  color: #fff;
+                  transition: none;
+                  font-size: 14px;
+                  font-weight: 400;
+                  font-family: "Raleway", sans-serif;
+                  font-weight: 600;
+                  transition: 0.3s;
+                }
+              </style>
+              <div class="row footer-newsletter justify-content-center">
+                <div class="col-lg-6">
+                  <div class="btn-wrap">
+                    <a href="/" class="btn-buy" target="_self">메인으로 돌아가기</a>
+                    <!-- <div id="hide_tag">
+                      <button type="button" onclick="location.href='' ">메인으로 돌아기기</button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+    </main>
+
+
+
+    <div id="preloader"></div>
+    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script type="text/javascript" src="{{ url_for('static', filename = 'vendor/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/jquery.easing/jquery.easing.min.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/php-email-form/validate.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/waypoints/jquery.waypoints.min.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/counterup/counterup.min.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/jquery-sticky/jquery.sticky.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/owl.carousel/owl.carousel.min.js') }}"></script>
+    <script type="text/javascript"
+      src="{{ url_for('static', filename = 'vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'vendor/venobox/venobox.min.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/main.js') }}"></script>
+
+    <script>
+      //Chart code
+      //var data = "{{ data|safe }}"
+      //var data = JSON.parse("{{ data|safe }}");
+      //console.log(JSON.parse("{{ data|safe }}"));
+      am4core.ready(function () {
+
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        var chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
+        var networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+        chart.data = [{{ lda_json| safe}}];
+
+      networkSeries.dataFields.value = "value";
+      networkSeries.dataFields.name = "name";
+      networkSeries.dataFields.children = "children";
+      networkSeries.nodes.template.tooltipText = "{name}:{value}";
+      networkSeries.nodes.template.fillOpacity = 1;
+
+      networkSeries.nodes.template.label.text = "{name}";
+
+      networkSeries.maxLevels = 3;
+      networkSeries.fontSize = 12;
+      networkSeries.minRadius = am4core.percent(4);
+      networkSeries.maxRadius = am4core.percent(10);
+
+      series.minRadius = 50;
+      series.maxRadius = 200;
+
+      networkSeries.nodes.template.label.text = "[font-size:12.5px;fill:#222;]{name}[/]";
+      // networkSeries.nodes.template.tooltipText = "[font-size:12px;fill:#fff;font-weight:bold;]{value}[/]";
+      // networkSeries.nodes.template.label.truncate = true;
+      networkSeries.nodes.template.togglable = false;
+
+      networkSeries.centerStrength = 2;
+      networkSeries.manyBodyStrength = -50;
+      networkSeries.links.template.strength = 7;
+      networkSeries.links.template.distance = 15;
+
+
+      networkSeries.links.template.strokeWidth = 1;
+
+      var hoverState = networkSeries.links.template.states.create("hover");
+      hoverState.properties.strokeWidth = 3;
+      hoverState.properties.strokeOpacity = 1;
+
+      networkSeries.nodes.template.events.on("over", function (event) {
+        event.target.dataItem.childLinks.each(function (link) {
+          link.isHover = true;
+        })
+        if (event.target.dataItem.parentLink) {
+          event.target.dataItem.parentLink.isHover = true;
+        }
+
+      })
+
+      networkSeries.nodes.template.events.on("out", function (event) {
+        event.target.dataItem.childLinks.each(function (link) {
+          link.isHover = false;
+        })
+        if (event.target.dataItem.parentLink) {
+          event.target.dataItem.parentLink.isHover = false;
+        }
+      })
+
+      }); // end am4core.ready()
+
+
+    </script>
+  </div>
+</body>
+
+</html>
