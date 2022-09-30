@@ -1,8 +1,8 @@
 ## 프로젝트 명
 특정 이미지와 관련된 인스타그램 해시태그를 추천
 
-## AWS EC2 탄력적 IP 주소
-http://13.209.116.94
+## 프로젝트 영상 주소
+https://youtu.be/5aAjTdCUPEc
 
 ## 사용 언어 및 개발 환경
 AWS, linux(Ubuntu), CUDA11.3, Python, docker-compose, flask, gunicorn, html, css, jquery, bootstrap, YOLOv5(이미지 객체 인식), PyTorch, LDA(문서의 숨겨진 주제를 찾아내어 키워드 도출), word2vec(유사도 높은 단어 키워드 도출), Selenium(인스타그램 태그 데이터 크롤링), roboflow
